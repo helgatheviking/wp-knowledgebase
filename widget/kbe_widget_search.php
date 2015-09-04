@@ -56,9 +56,14 @@ class kbe_Search_Widget extends WP_Widget {
     }
     
     function form($widgetData) {
+
+        $defaults = array(
+            'txtKbeSearchHeading' => __( 'Search Articles', 'kbe' ),
+        );
+
         //Set up some default widget settings.
-        $widgetData = wp_parse_args((array) $widgetData);
-?>
+        $widgetData = wp_parse_args($widgetData, $defaults);
+    ?>
         <p>
             <label for="<?php echo $this->get_field_id('txtKbeSearchHeading'); ?>"><?php _e('Search Title:','kbe'); ?></label>
             <input id="<?php echo $this->get_field_id('txtKbeSearchHeading'); ?>" name="<?php echo $this->get_field_name('txtKbeSearchHeading'); ?>" value="<?php echo $widgetData['txtKbeSearchHeading']; ?>" style="width:275px;" />
