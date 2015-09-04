@@ -22,14 +22,7 @@ function kbe_plugin_menu() {
  */
 add_action( 'admin_init', 'kbe_register_settings' );
 function kbe_register_settings() {
-    register_setting('kbe_settings_group', 'kbe_plugin_slug');
-    register_setting('kbe_settings_group', 'kbe_article_qty');
-    register_setting('kbe_settings_group', 'kbe_search_setting');
-    register_setting('kbe_settings_group', 'kbe_breadcrumbs_setting');
-    register_setting('kbe_settings_group', 'kbe_sidebar_home');
-    register_setting('kbe_settings_group', 'kbe_sidebar_inner');
-    register_setting('kbe_settings_group', 'kbe_comments_setting');
-    register_setting('kbe_settings_group', 'kbe_bgcolor');
+    register_setting( 'kbe_settings', 'kbe_settings', 'kbe_validate_settings' );
 }
 
 /**
@@ -68,4 +61,33 @@ function wp_kbe_order(){
     require "kbe_order.php";
 }
 
+/**
+ * Sanitize and validate plugin settings
+ * @param  array $input
+ * @return array
+ * @since  1.1.0
+ */
+function kbe_validate_settings( $input ) {
+    $settings = get_option( 'kbe_settings' );
+
+    $clean = array();
+
+    $clean['plugin_slug'] = isset( $input['plugin_slug'] ) ? sanitize_title( $input['plugin_slug'] ) : '';
+    $clean['article_qty'] = intval( $input['article_qty'] );
+
+    $clean['search_settings'] =  isset( $input['search_settings'] ) && $input['search_settings'] ? 1 : 0 ;  //checkbox
+    $clean['breadcrumb_settings'] =  isset( $input['breadcrumb_settings'] ) && $input['breadcrumb_settings'] ? 1 : 0 ;  //checkbox
+
+    $radio = array( 0, 1, 2 );
+
+    $clean['sidebar_home'] = isset( $input['sidebar_home'] ) && in_array( $input['sidebar_home'], $radio ) ? intval( $input['sidebar_home'] ) : 0;
+    $clean['sidebar_inner'] = isset( $input['sidebar_inner'] ) && in_array( $input['sidebar_inner'], $radio ) ? intval( $input['sidebar_inner'] ) : 0;
+
+    $clean['comment_settings'] =  isset( $input['comment_settings'] ) && $input['comment_settings'] ? 1 : 0 ;  //checkbox
+
+    $clean['bgcolor'] = isset( $input['bgcolor'] ) ? sanitize_hex_color( $input['bgcolor'] ) : '';
+
+    return $clean;
+    
+}
 
