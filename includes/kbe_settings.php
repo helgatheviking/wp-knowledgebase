@@ -1,42 +1,12 @@
 <!--==============
-	>> KBE Settings
+    >> KBE Settings
 ==============-->
-
 <div id="wpbody">
     <div id="wpbody-content">
         <div class="wrap">
             
             <h2><?php _e('Knowledgebase Display Settings','kbe')?></h2>
-            <?php
-                global $wpdb;
-                
-                $tbl_posts = $wpdb->prefix."posts";
-                
-                if(isset($_GET['settings-updated'])){
-                    $kbe_posts = $wpdb->get_results("Select * From $tbl_posts Where post_content like '%[kbe_knowledgebase]%' and post_type = 'page'");
-                    
-                    foreach($kbe_posts as $kbe_post){
-                        $kbe_id = $kbe_post->ID;
-                        $kbe_slug = get_option('kbe_plugin_slug');
-                        
-                        $kbe_post_data = array(
-                            'post_name' => $kbe_slug
-                        );
-                        
-                        $kbe_post_where = array(
-                            'ID' => $kbe_id
-                        );
-                        
-                        $wpdb->update($tbl_posts, $kbe_post_data, $kbe_post_where);
-                    }
-                    flush_rewrite_rules();
-            ?>
-                <div class='updated' style='margin-top:10px;'>
-                    <p><?php _e('Settings updated successfully','kbe') ?></p>
-                </div>
-            <?php
-                }
-            ?>
+            <?php settings_errors('kbe_settings_group');            ?>
             <div class="kbe_admin_left_bar">
                 <div class="kbe_admin_left_content">
                     <div class="kbe_admin_left_heading">
@@ -48,7 +18,7 @@
                             settings_fields('kbe_settings_group');
                         ?>
                         <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 18px;">
-                            <tr>
+                           <tr>
                                 <td width="35%" valign="top">
                                     <label><?php _e('Knowledgebase Slug','kbe'); ?></label>
                                 </td>
@@ -65,7 +35,7 @@
                                 <p>
                                     <strong><?php _e('Note:','kbe'); ?></strong>
                                     <?php _e('Set the number of articles to show in each category on KB homepage','kbe'); ?>
-                              	</p>
+                                </p>
                                 </td>
                             </tr>
                             <tr>

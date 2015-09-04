@@ -1,10 +1,15 @@
 <?php
-/*
-============
-    Article Post type
-============
-*/
+/**
+ * Custom Post Type and Custom Taxonomies
+ *
+ * @version     1.1.0
+ * @author      Enigma Plugins
+ */
 
+/**
+ * Register Post Type
+ * @since  1.0.0
+ */
 add_action('init', 'kbe_articles');
 function kbe_articles() {
     
@@ -54,9 +59,13 @@ function kbe_articles() {
  
     register_post_type( 'kbe_knowledgebase' , $args );
 }
-add_action( 'init', 'kbe_taxonomies', 0 );
 
-// Article taxonamy
+
+/**
+ * Register Custom Category
+ * @since  1.0.0
+ */
+add_action( 'init', 'kbe_taxonomies', 0 );
 function kbe_taxonomies() {
     // Add new taxonomy, make it hierarchical (like categories)
     $labels = array(
@@ -83,6 +92,10 @@ function kbe_taxonomies() {
     ));
 }
 
+/**
+ * Register Custom Tags
+ * @since  1.0.0
+ */
 add_action( 'init', 'kbe_custom_tags', 0 );
 function kbe_custom_tags() {
     $labels = array(
@@ -109,6 +122,11 @@ function kbe_custom_tags() {
     );
 }
 
+
+/**
+ * Set Article Views
+ * @since  1.0.0
+ */
 function kbe_set_post_views($postID) {
     $count_key = 'kbe_post_views_count';
     $count = get_post_meta($postID, $count_key, true);
@@ -123,7 +141,10 @@ function kbe_set_post_views($postID) {
     }
 }
 
-//To keep the count accurate, lets get rid of prefetching
+/**
+ * Remove Pre-Fetching to keep count accurate
+ * @since  1.0.0
+ */
 remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head', 10, 0);
 function kbe_get_post_views($postID){
     $count_key = 'kbe_post_views_count';
@@ -136,6 +157,12 @@ function kbe_get_post_views($postID){
     }
     return $count.' Views';
 }
+
+/**
+ * Custom Post Type Columns
+ * @param array $columns
+ * @since  1.0.0
+ */
 add_filter("manage_edit-kbe_knowledgebase_columns", "kbe_edit_columns");     
 function kbe_edit_columns($columns){
     $columns = array(  
@@ -150,7 +177,12 @@ function kbe_edit_columns($columns){
     );
     return $columns;  
 }    
-  
+
+/**
+ * Display of Custom Post Type Columns
+ * @param array $column
+ * @since  1.0.0
+ */
 add_action("manage_posts_custom_column",  "kbe_custom_columns");   
 function kbe_custom_columns($column){
     global $post;  
@@ -183,4 +215,23 @@ function kbe_custom_columns($column){
         break;
     }
 }
+
+
+/**
+ * Register KBE widget area
+ * @since  1.0.0
+ */
+add_action( 'widgets_init' , 'kbe_register_sidebar' );
+function kbe_register_sidebar(){
+    register_sidebar(array(
+        'name' => __('WP Knowledgebase Sidebar','kbe'),
+        'id' => 'kbe_cat_widget',
+        'description' => __('WP Knowledgebase sidebar area','kbe'),
+        'before_widget' => '',
+        'after_widget' => '',
+        'before_title' => '<h6>',
+        'after_title' => '</h6>',
+    ));
+}
+
 ?>
