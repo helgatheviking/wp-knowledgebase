@@ -38,6 +38,8 @@ function kbe_includes(){
     if(is_admin()){
         //  Plugin Settings
         require "includes/kbe_admin.php";
+        //  Plugin upgrade routine
+        require "includes/kbe_upgrade.php";
     }
 
     //  Post type and taxonomies
