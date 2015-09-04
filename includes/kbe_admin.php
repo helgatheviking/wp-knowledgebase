@@ -87,6 +87,8 @@ function kbe_validate_settings( $input ) {
 
     $clean['bgcolor'] = isset( $input['bgcolor'] ) ? sanitize_hex_color( $input['bgcolor'] ) : '';
 
+    $clean['uninstall_mode'] = isset( $input['uninstall_mode'] ) && in_array( $input['uninstall_mode'], $radio ) ? intval( $input['sidebar_home'] ) : 0;
+    
     return $clean;
     
 }

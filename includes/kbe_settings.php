@@ -138,6 +138,23 @@ $settings = wp_parse_args( get_option( 'kbe_settings' ), $defaults );
                                 </td>
                             </tr>
                             <tr>
+                                <td valign="top">
+                                    <label><?php _e('Uninstall Mode','kbe'); ?></label>
+                                </td>
+                                <td>
+                                    <input type="radio" name="kbe_uninstall_settings" id="kbe_uninstall_nuclear" value="2" <?php checked( $settings['uninstall_mode'], 2 ); ?>>
+                                    <span><?php _e('EVERYTHING','kbe'); ?></span>
+                                </td>
+                                <td>
+                                    <input type="radio" name="kbe_uninstall_settings" id="kbe_uninstall_settings" value="1" <?php checked( $settings['uninstall_mode'], 1 ); ?>>
+                                    <span><?php _e('Settings Only','kbe'); ?></span>
+                                </td>
+                                <td>
+                                    <input type="radio" name="kbe_uninstall_settings" id="kbe_uninstall_none" value="0" <?php checked( $settings['uninstall_mode'], 0 ); ?>>
+                                    <span><?php _e('Nothing','kbe'); ?></span>
+                                </td>
+                            </tr>
+                            <tr>
                                 <td colspan="4" align="right" style="border:0px;">
                                     <input type="submit" value="<?php _e('Save Changes','kbe'); ?>" name="submit" id="submit">
                                 </td>
