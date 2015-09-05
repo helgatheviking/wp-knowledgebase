@@ -44,9 +44,9 @@ function kbe_includes(){
 
     //  Post type and taxonomies
     require "includes/kbe_post_type.php";
-    //  Post type and taxonomies
+    //  Front end display functions
     require "includes/kbe_frontend_functions.php";
-    //  Post type and taxonomies
+    //  Template tags
     require "includes/kbe_template_functions.php";
 
     //  Require Category Widget file
