@@ -23,6 +23,22 @@ function kbe_plugin_menu() {
 add_action( 'admin_init', 'kbe_register_settings' );
 function kbe_register_settings() {
     register_setting( 'kbe_settings', 'kbe_settings', 'kbe_validate_settings' );
+    // Add our permalink settings
+    add_settings_field(
+        'kbe_article_category_slug',            // id
+        __( 'Knowledgebase category base', 'kbe' ),   // setting title
+        'kbe_article_category_slug_input',  // display callback
+        'permalink',                                    // settings page
+        'optional'                                      // settings section
+    );
+    add_settings_field(
+        'kbe_article_tag_slug',                 // id
+        __( 'Knowledgebase tag base', 'kbe' ),        // setting title
+        'kbe_article_tag_slug_input',       // display callback
+        'permalink',                                    // settings page
+        'optional'                                      // settings section
+    );
+
 }
 
 /**
@@ -93,3 +109,62 @@ function kbe_validate_settings( $input ) {
     
 }
 
+
+/**
+ * Show a slug input box.
+ * @since  1.1.0
+ */
+function kbe_article_category_slug_input() {                      
+    $permalinks = get_option( 'kbe_permalinks' );
+    ?>
+    <input name="kbe_permalinks[category_base]" type="text" class="regular-text code" value="<?php if ( isset( $permalinks['category_base'] ) ) echo esc_attr( $permalinks['category_base'] ); ?>" placeholder="<?php echo esc_attr_x('knowledgebase_category', 'slug', 'kbe') ?>" />
+    <?php
+}
+
+
+/**
+ * Show a slug input box.
+ * @since  1.1.0
+ */
+function kbe_article_tag_slug_input() {
+    $permalinks = get_option( 'kbe_permalinks' );
+    ?>
+    <input name="kbe_permalinks[tag_base]" type="text" class="regular-text code" value="<?php if ( isset( $permalinks['tag_base'] ) ) echo esc_attr( $permalinks['tag_base'] ); ?>" placeholder="<?php echo esc_attr_x('knowledgebase_tags', 'slug', 'kbe') ?>" />
+    <?php
+}
+
+/**
+ * Show the settings
+ * @since  1.1.0
+ */
+function kbe_permalink_display_settings() {
+    echo wpautop( __( 'These settings control the permalinks used for Knowledgebase articles. These settings only apply when <strong>not</strong> using "default" permalinks above.', 'kbe' ) );
+
+    $permalinks = get_option( 'kbe_permalinks' );
+
+
+}
+
+/**
+ * Save the permalinks
+ * @since  1.1.0
+ */
+add_action( 'load-options-permalink.php', 'kbe_validate_permalinks' );
+function kbe_validate_permalinks(){
+
+    // @todo check permissions
+
+    // We need to save the options ourselves; settings api does not trigger save for the permalinks page
+    if ( isset( $_POST['kbe_permalinks'] ) ) {
+
+        $input = $_POST['kbe_permalinks'];
+
+        $permalinks = array();
+        $permalinks['category_base'] = isset( $input['category_base'] ) ? untrailingslashit( sanitize_title( $input['category_base'] ) ) : '';
+        $permalinks['tag_base'] = isset( $input['tag_base'] ) ? untrailingslashit( sanitize_title( $input['tag_base'] ) ) : '';
+
+        update_option( 'kbe_permalinks', $permalinks );
+
+    }
+
+}

@@ -15,6 +15,11 @@ function kbe_articles() {
     
     $kb_slug = 'kbe_knowledgebase';
     $kb_slug = get_option('kbe_plugin_slug');
+
+    $settings = get_option( 'kbe_options' );
+    $archive_page_id = isset( $settings['archive_page_id' ] ) ? $settings['archive_page_id'] : 0;
+    
+    $permalink_options = get_option( 'kbe_permalinks' );
     
     $labels = array(
         'name'                  => 	__('Knowledgebase', 'kbe'),
@@ -82,45 +87,55 @@ function kbe_taxonomies() {
         'menu_name'         => 	__( 'Categories', 'kbe' )
     ); 	
 
+    $permalinks = get_option( 'kbe_permalinks' );
+
+    $category_base = isset( $permalinks['category_base'] ) ? $permalinks['category_base'] : 'knowledgebase_category';
+
     $args = apply_filters( 'kbe_taxonomy_args', array (
         'hierarchical'      =>  true,
         'labels'            =>  $labels,
         'singular_label'    =>  __( 'Knowledgebase Category', 'kbe'),
         'show_ui'           =>  true,
         'query_var'         =>  true,
-        'rewrite'           =>  array( 'slug' => 'knowledgebase_category', 'with_front' => false, 'hierarchical' => true )
+        'rewrite'           =>  array( 'slug' => $category_base, 'with_front' => false, 'hierarchical' => true )
     ) );
 
     register_taxonomy( 'kbe_taxonomy', array( 'kbe_knowledgebase' ), $args );
-}
 
-/**
- * Register Custom Tags
- * @since  1.0.0
- */
-add_action( 'init', 'kbe_custom_tags', 0 );
-function kbe_custom_tags() {
     $labels = array(
-                    'name' 		=>  __( 'Knowledgebase Tags', 'kbe' ),
-                    'singular_name' 	=>  __( 'Knowledgebase Tag', 'kbe' ),
-                    'search_items' 	=>  __( 'Search Knowledgebase Tags', 'kbe' ),
-                    'all_items' 	=>  __( 'All Knowledgebase Tags', 'kbe' ),
-                    'edit_item' 	=>  __( 'Edit Knowledgebase Tag', 'kbe' ),
-                    'update_item' 	=>  __( 'Update Knowledgebase Tag', 'kbe' ),
-                    'add_new_item' 	=>  __( 'Add New Knowledgebase Tag', 'kbe' ),
-                    'new_item_name' 	=>  __( 'New Knowledgebase Tag Name', 'kbe' ),
-                    'menu_name' 	=>  __( 'Tags', 'kbe' )
+                    'name'      =>  __( 'Knowledgebase Tags', 'kbe' ),
+                    'singular_name'     =>  __( 'Knowledgebase Tag', 'kbe' ),
+                    'search_items'  =>  __( 'Search Knowledgebase Tags', 'kbe' ),
+                    'all_items'     =>  __( 'All Knowledgebase Tags', 'kbe' ),
+                    'edit_item'     =>  __( 'Edit Knowledgebase Tag', 'kbe' ),
+                    'update_item'   =>  __( 'Update Knowledgebase Tag', 'kbe' ),
+                    'add_new_item'  =>  __( 'Add New Knowledgebase Tag', 'kbe' ),
+                    'new_item_name'     =>  __( 'New Knowledgebase Tag Name', 'kbe' ),
+                    'menu_name'     =>  __( 'Tags', 'kbe' )
             );
+
+    $permalinks = get_option( 'kbe_permalinks' );
+    $tag_base = isset( $permalinks['category_base'] ) ? $permalinks['category_base'] : 'knowledgebase_tags';
 
     $args = apply_filters( 'kbe_tags_args', array (
         'hierarchical'      =>  false,
         'labels'            =>  $labels,
         'show_ui'           =>  true,
         'query_var'         =>  true,
-        'rewrite'           =>  array( 'slug' => 'knowledgebase_tags', 'with_front' => false )
+        'rewrite'           =>  array( 'slug' => $tag_base, 'with_front' => true )
     ) );
 
     register_taxonomy( 'kbe_tags', array('kbe_knowledgebase'), $args );
+
+}
+
+/**
+ * Register Custom Tags
+ * @since  1.0.0
+ * @deprecated 1.1.0
+ */
+function kbe_custom_tags() {
+    _deprecated_function( 'kbe_custom_tags', '1.1.0', 'kbe_taxonomies' );
 }
 
 
