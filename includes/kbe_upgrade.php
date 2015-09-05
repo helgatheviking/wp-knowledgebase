@@ -10,9 +10,11 @@
  * Upgrade Routine
  * @since  1.1.0
  */
+add_action( 'admin_init', 'kbe_upgrade_plugin', 1 );
 function kbe_upgrade_plugin(){
 
 	$v = 'kbe_db_version';
+
     $db_version = get_option( $v, false );
 
     // major 1.1.0 upgrade
@@ -27,7 +29,7 @@ function kbe_upgrade_plugin(){
 		}
 
 		$slug = trim( get_option( 'kbe_plugin_slug' ) );
-		$options['plugin_slug'] = $slug ? $slug : 'knowledgebase';
+		$options['article_base'] = $slug ? $slug : 'knowledgebase';
 		$options['article_qty'] = get_option( 'kbe_article_qty', 5 );
 		$options['search_setting'] = get_option( 'kbe_search_setting', 0 );
 		$options['breadcrumb_setting'] = get_option( 'kbe_breadcrumbs_setting', 0 );
@@ -62,4 +64,3 @@ function kbe_upgrade_plugin(){
 
     return false;
 }
-add_action( 'admin_init', 'kbe_upgrade_plugin' );
