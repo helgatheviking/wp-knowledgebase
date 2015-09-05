@@ -34,11 +34,22 @@ $settings = wp_parse_args( get_option( 'kbe_settings' ), $defaults );
                         ?>
                         <table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 18px;">
                             <tr>
-                                <td width="35%" valign="top">
-                                    <label><?php _e('Knowledgebase Slug','kbe'); ?></label>
+                                <td valign="top">
+                                    <label><?php _e( 'Knowledgebase Archive','kbe' ); ?></label>
                                 </td>
                                 <td colspan="3">
-                                    <input type="text" name="kbe_settings[plugin_slug]" id="kbe_plugin_slug" value="<?php echo esc_attr( $settings['plugin_slug'] ); ?>">
+                                    <?php 
+                                    $dropdown_args = array( 'show_option_none' => __( '--Select the Knowledgebase Archive--' ), 
+                                                            'name'=>'kbe_settings[archive_page_id]',
+                                                            'id' => 'kbe_archive_page_id',
+                                                            'selected' => $settings['archive_page_id'] );
+
+                                    wp_dropdown_pages( $dropdown_args );
+                                    ?> 
+                                <p>
+                                    <strong><?php _e('Note:','kbe'); ?></strong>
+                                    <?php printf( __( 'The base page can also be used in your <a href="%s">Knowledgebase permalinks</a>.', 'kbe' ), admin_url( 'options-permalink.php' ) ); ?>
+                                </p>
                                 </td>
                             </tr>
                             <tr>
