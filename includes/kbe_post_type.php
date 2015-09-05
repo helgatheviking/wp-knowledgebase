@@ -64,6 +64,9 @@ function kbe_articles() {
  */
 add_action( 'init', 'kbe_taxonomies', 0 );
 function kbe_taxonomies() {
+
+    $permalinks = get_option( 'kbe_permalinks' );
+
     // Add new taxonomy, make it hierarchical (like categories)
     $labels = array(
         'name'              => 	__( 'Knowledgebase Category', 'kbe'),
@@ -78,8 +81,6 @@ function kbe_taxonomies() {
         'new_item_name'     => 	__( 'New Knowledgebase Category Name', 'kbe' ),
         'menu_name'         => 	__( 'Categories', 'kbe' )
     ); 	
-
-    $permalinks = get_option( 'kbe_permalinks' );
 
     $category_base = isset( $permalinks['category_base'] ) ? $permalinks['category_base'] : 'knowledgebase_category';
 
@@ -106,7 +107,6 @@ function kbe_taxonomies() {
                     'menu_name'     =>  __( 'Tags', 'kbe' )
             );
 
-    $permalinks = get_option( 'kbe_permalinks' );
     $tag_base = isset( $permalinks['category_base'] ) ? $permalinks['category_base'] : 'knowledgebase_tags';
 
     $args = apply_filters( 'kbe_tags_args', array (
@@ -243,5 +243,3 @@ function kbe_register_sidebar(){
         'after_title' => '</h6>',
     ));
 }
-
-?>
