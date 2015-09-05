@@ -38,7 +38,7 @@ function kbe_articles() {
         'feeds'         => 	true,
     );
     
-    $args = array(
+    $args = apply_filters( 'kbe_post_type_args', array(
         'labels'                => 	$labels,
         'public'                => 	true,
         'publicly_queryable'    => 	true,
@@ -55,7 +55,7 @@ function kbe_articles() {
         'can_export'            => 	true,
         'has_archive'           => 	true,
         'exclude_from_search'   => 	true
-    );
+    ) );
  
     register_post_type( 'kbe_knowledgebase' , $args );
 }
@@ -79,17 +79,19 @@ function kbe_taxonomies() {
         'update_item'       => 	__( 'Update Knowledgebase Category', 'kbe' ),
         'add_new_item'      => 	__( 'Add New Knowledgebase Category', 'kbe' ),
         'new_item_name'     => 	__( 'New Knowledgebase Category Name', 'kbe' ),
-	'menu_name'         => 	__( 'Categories', 'kbe' )
+        'menu_name'         => 	__( 'Categories', 'kbe' )
     ); 	
-	
-    register_taxonomy( 'kbe_taxonomy', array( 'kbe_knowledgebase' ), array(
-        'hierarchical'      => 	true,
-        "labels"            => 	$labels,
-        "singular_label"    => 	__( 'Knowledgebase Category', 'kbe'),
-        'show_ui'           => 	true,
-        'query_var'         => 	true,
-        'rewrite'           => 	array( 'slug' => 'knowledgebase_category', 'with_front' => true )
-    ));
+
+    $args = apply_filters( 'kbe_taxonomy_args', array (
+        'hierarchical'      =>  true,
+        'labels'            =>  $labels,
+        'singular_label'    =>  __( 'Knowledgebase Category', 'kbe'),
+        'show_ui'           =>  true,
+        'query_var'         =>  true,
+        'rewrite'           =>  array( 'slug' => 'knowledgebase_category', 'with_front' => false, 'hierarchical' => true )
+    ) );
+
+    register_taxonomy( 'kbe_taxonomy', array( 'kbe_knowledgebase' ), $args );
 }
 
 /**
@@ -110,16 +112,15 @@ function kbe_custom_tags() {
                     'menu_name' 	=>  __( 'Tags', 'kbe' )
             );
 
-    register_taxonomy( 'kbe_tags',
-                        array('kbe_knowledgebase'),
-                        array(
-                            'hierarchical'  =>  false,
-                            'labels'        =>  $labels,
-                            'show_ui'       =>  true,
-                            'query_var'     =>  true,
-                            'rewrite'       =>  array('slug' => 'knowledgebase_tags', 'with_front' => true),
-                        )
-    );
+    $args = apply_filters( 'kbe_tags_args', array (
+        'hierarchical'      =>  false,
+        'labels'            =>  $labels,
+        'show_ui'           =>  true,
+        'query_var'         =>  true,
+        'rewrite'           =>  array( 'slug' => 'knowledgebase_tags', 'with_front' => false )
+    ) );
+
+    register_taxonomy( 'kbe_tags', array('kbe_knowledgebase'), $args );
 }
 
 
