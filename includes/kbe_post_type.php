@@ -169,9 +169,11 @@ function kbe_get_post_views($postID){
     if($count==''){
         delete_post_meta($postID, $count_key);
         add_post_meta($postID, $count_key, '1');
-        return "1 View";
+        $count = 1;
     }
-    return $count.' Views';
+
+    return sprintf( _n( '%s View', '%s Views', $count, 'kbe' ), $count );
+
 }
 
 /**
