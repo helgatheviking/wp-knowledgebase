@@ -14,6 +14,7 @@ $uninstall_mode = isset( $settings['uninstall_mode'] ) ? $settings['uninstall_mo
 //=========> Delete Plugin Settings From options Table
 if( in_array( $uninstall_mode, array( 1, 2 ) ){
     delete_option('kbe_settings');
+    delete_option( 'kbe_permalinks' );
     delete_option('kbe_db_version');
 }
 
@@ -120,3 +121,5 @@ if( $uninstall_mode == 2 ){
     $wpdb->query("Delete From ".$wpdb->prefix."term_taxonomy Where taxonomy = 'kbe_tags'");
 
 }
+
+flush_rewrite_rules();

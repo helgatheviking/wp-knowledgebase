@@ -3,7 +3,6 @@
 ==============-->
 <?php 
 $defaults = array( 
-    'plugin_slug' => 'Knowledgebase',
     'archive_page_id' => 0,
     'article_qty' => 5,
     'search_setting' =>  0,

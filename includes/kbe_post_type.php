@@ -12,14 +12,13 @@
  */
 add_action('init', 'kbe_articles');
 function kbe_articles() {
-    
-    $kb_slug = 'kbe_knowledgebase';
-    $kb_slug = get_option('kbe_plugin_slug');
 
-    $settings = get_option( 'kbe_options' );
+    $settings = get_option( 'kbe_settings' );
+    $permalinks = get_option( 'kbe_permalinks' );
+
     $archive_page_id = isset( $settings['archive_page_id' ] ) ? $settings['archive_page_id'] : 0;
     
-    $permalink_options = get_option( 'kbe_permalinks' );
+    $article_permalink = ! empty( $permalinks['article_base'] ) ? $permalinks['article_base'] : _x( 'knowledgebase', 'default slug', 'kbe' );
     
     $labels = array(
         'name'                  => 	__('Knowledgebase', 'kbe'),
@@ -36,13 +35,6 @@ function kbe_articles() {
         'parent_item_colon'     => 	''
     );
     
-    $kbe_rewrite = array(
-        'slug'        	=> 	KBE_PLUGIN_SLUG,
-        'with_front'    => 	true,
-        'pages'         => 	false,
-        'feeds'         => 	true,
-    );
-    
     $args = apply_filters( 'kbe_post_type_args', array(
         'labels'                => 	$labels,
         'public'                => 	true,
@@ -53,12 +45,12 @@ function kbe_articles() {
         'capability_type'       => 	'post',
         'hierarchical'          => 	false,
         'supports'              => 	array('title','editor','thumbnail','comments','tags','revisions'),
-        'rewrite'               => 	$kbe_rewrite,
+        'rewrite'               =>  $article_permalink ? array( 'slug' => untrailingslashit( $article_permalink ), 'with_front' => false, 'feeds' => true ) : false,
         'show_in_menu'          => 	true,
         'show_in_nav_menus'     => 	true,
         'show_in_admin_bar'     => 	true,
         'can_export'            => 	true,
-        'has_archive'           => 	true,
+        'has_archive'           => 	$archive_page_id && get_post( $archive_page_id ) ? get_page_uri( $archive_page_id ) : 'knowledgebase',
         'exclude_from_search'   => 	true
     ) );
  

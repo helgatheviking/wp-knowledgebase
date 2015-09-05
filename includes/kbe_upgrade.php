@@ -21,6 +21,8 @@ function kbe_upgrade_plugin(){
     if( version_compare( $db_version, '1.1.0', '<')) {
         
      	// merge all options fields into 1 option
+     	$options = $permalinks = array();
+
     	global $wpdb;
 		$getSql = $wpdb->get_results("Select ID From $wpdb->posts Where post_content Like '%[kbe_knowledgebase]%' And post_type <> 'revision'");
 
@@ -28,8 +30,6 @@ function kbe_upgrade_plugin(){
 		    $options['archive_page_id'] = $getRow->ID;
 		}
 
-		$slug = trim( get_option( 'kbe_plugin_slug' ) );
-		$options['article_base'] = $slug ? $slug : 'knowledgebase';
 		$options['article_qty'] = get_option( 'kbe_article_qty', 5 );
 		$options['search_setting'] = get_option( 'kbe_search_setting', 0 );
 		$options['breadcrumb_setting'] = get_option( 'kbe_breadcrumbs_setting', 0 );
@@ -37,6 +37,9 @@ function kbe_upgrade_plugin(){
 		$options['sidebar_inner'] = get_option( 'kbe_sidebar_inner', 0 );
 		$options['comments_setting'] = get_option( 'kbe_comments_setting', 0 );
 		$options['bgcolor'] = get_option( 'kbe_bgcolor', '' );
+
+		$slug = trim( get_option( 'kbe_plugin_slug' ) );
+		$permalinks['article_base'] = $slug ? $slug : 'knowledgebase';
 
 		// delete old options
 		delete_option('kbe_bgcolor');
@@ -56,6 +59,7 @@ function kbe_upgrade_plugin(){
 
 		// update the new options
 		update_option( 'kbe_settings', $options );
+		update_option( 'kbe_permalinks', $options );
 
         // update the db version number
         update_option( $v, '1.1.0' );
