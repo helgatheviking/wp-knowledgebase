@@ -175,15 +175,16 @@ function wp_kbe_hooks($kbe_networkwide) {
  * @deprecated  1.1.0
  */
 //  define options values
-define('KBE_ARTICLE_QTY', get_option('kbe_article_qty'));
-define('KBE_PLUGIN_SLUG', get_option('kbe_plugin_slug'));
-define('KBE_SEARCH_SETTING', get_option('kbe_search_setting'));
-define('KBE_BREADCRUMBS_SETTING', get_option('kbe_breadcrumbs_setting'));
-define('KBE_SIDEBAR_HOME', get_option('kbe_sidebar_home'));
-define('KBE_SIDEBAR_INNER', get_option('kbe_sidebar_inner'));
-define('KBE_COMMENT_SETTING', get_option('kbe_comments_setting'));
-define('KBE_BG_COLOR', get_option('kbe_bgcolor'));
-define('KBE_LINK_STRUCTURE', get_option('permalink_structure'));
+$settings = get_option( 'kbe_settings' );
+define('KBE_ARTICLE_QTY', isset( $settings['article_qty'] ) ? $settings['article_qty'] : 5 );
+define('KBE_PLUGIN_SLUG', isset( $settings['article_base'] ) ? $settings['article_base'] : 'knowledgebase' );
+define('KBE_SEARCH_SETTING', isset( $settings['search_setting'] ) ? $settings['search_setting'] : 0 );
+define('KBE_BREADCRUMBS_SETTING', isset( $settings['breadcrumbs_setting'] ) ? $settings['breadcrumbs_setting'] : 0 );
+define('KBE_SIDEBAR_HOME', isset( $settings['sidebar_home'] ) ? $settings['sidebar_home'] : 0 );
+define('KBE_SIDEBAR_INNER', isset( $settings['sidebar_inner'] ) ? $settings['sidebar_inner'] : 0 );
+define('KBE_COMMENT_SETTING', isset( $settings['comments_setting'] ) ? $settings['comments_setting'] : 0 );
+define('KBE_BG_COLOR', isset( $settings['bgcolor'] ) ? $settings['bgcolor'] : '' );
+define('KBE_LINK_STRUCTURE', get_option('permalink_structure') );
 define('KBE_POST_TYPE', 'kbe_knowledgebase');
 define('KBE_POST_TAXONOMY', 'kbe_taxonomy');
 define('KBE_POST_TAGS', 'kbe_tags');
