@@ -148,6 +148,22 @@ function wp_kbe_hooks() {
 
 }
 
+/**
+ * Trigger activation on new blogs if network activated
+ * @since 1.1.0
+ */
+add_action( 'wpmu_new_blog', 'kbe_activate_sitewide_plugins' );
+function kbe_activate_sitewide_plugins( $blog_id ){
+    // Switch to new website
+    switch_to_blog( $blog_id );
+ 
+    // Activate
+    do_action( 'activate_wp-knowledgebase', false );
+ 
+    // Restore current website
+    restore_current_blog();
+}
+ 
 
 /**
  * Deprecate all constants eventually
