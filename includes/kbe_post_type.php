@@ -107,7 +107,7 @@ function kbe_taxonomies() {
                     'menu_name'     =>  __( 'Tags', 'kbe' )
             );
 
-    $tag_base = isset( $permalinks['category_base'] ) ? $permalinks['category_base'] : 'knowledgebase_tags';
+    $tag_base = isset( $permalinks['tag_base'] ) ? $permalinks['tag_base'] : 'knowledgebase_tags';
 
     $args = apply_filters( 'kbe_tags_args', array (
         'hierarchical'      =>  false,
