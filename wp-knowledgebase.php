@@ -189,16 +189,7 @@ define('KBE_LINK_STRUCTURE', get_option('permalink_structure') );
 define('KBE_POST_TYPE', 'kbe_knowledgebase');
 define('KBE_POST_TAXONOMY', 'kbe_taxonomy');
 define('KBE_POST_TAGS', 'kbe_tags');
-
-//=========> Get Knowledgebase title
-global $wpdb;
-$getSql = $wpdb->get_results("Select ID From $wpdb->posts Where post_content Like '%[kbe_knowledgebase]%' And post_type <> 'revision'");
-
-foreach($getSql as $getRow) {
-    $pageId = $getRow->ID;
-}
-define('KBE_PAGE_TITLE', $pageId);
-
+define('KBE_PAGE_TITLE', isset( $settings['archive_page_id'] ) ? $settings['archive_page_id'] : 0 );
 
 
 /**
