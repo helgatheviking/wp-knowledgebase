@@ -67,107 +67,85 @@ function kbe_includes(){
  * @since 1.0.0
  */
 register_activation_hook(__FILE__, 'wp_kbe_hooks');
-function wp_kbe_hooks($kbe_networkwide) {
-    
-    //  Post type and taxonomies
-    require "includes/kbe_post_type.php";
-    kbe_articles();
-    kbe_taxonomies();
-    flush_rewrite_rules();
-    
+function wp_kbe_hooks() {
     global $wpdb;
+
     /*Create "term_order" Field in "wp_terms" Table for sortable order*/
     $term_order_qry = $wpdb->query("SHOW COLUMNS FROM $wpdb->terms LIKE 'terms_order'");
     if($term_order_qry == 0){
         $wpdb->query("ALTER TABLE $wpdb->terms ADD `terms_order` INT(4) NULL DEFAULT '0'");
     }
-    
-    $kbe_prefix = $wpdb->prefix;
 
-    $kbe_pageSql = $wpdb->get_results("Select *
-                                       From ".$kbe_prefix."posts
-                                       Where post_content like '%[kbe_knowledgebase]%'
-                                       And post_type = 'page'");
+    // set default settings
+    $settings = get_option( 'kbe_settings', array() );
 
-    if(!$kbe_pageSql){
-        //  Insert a "Knowledgebase" page
-        $kbe_max_page_Sql = $wpdb->get_results("SELECT Max(ID) As kbe_maxId FROM ".$kbe_prefix."posts");
-        foreach($kbe_max_page_Sql as $kbe_max_page_row) {
-            $kbe_maxId = $kbe_max_page_row->kbe_maxId;
-            $kbe_maxId = $kbe_maxId + 1;
-        }
+    if( empty( $settings ) ){
+        $settings = array( 
+            'archive_page_id' => 0,
+            'article_qty' => 5,
+            'search_setting' =>  0,
+            'breadcrumb_setting' =>  0,
+            'sidebar_home' => 0,
+            'sidebar_inner' => 0,
+            'comment_setting' => 0,
+            'uninstall_mode' => 0,
+            'bgcolor' => '',
+        );
+    }
 
-        $kbe_now = date('Y-m-d H:i:s');
-        $kbe_now_gmt = gmdate('Y-m-d H:i:s');
-        $kbe_guid = get_option('home') . '/?page_id='.$kbe_maxId;
-        $kbe_user_id = get_current_user_id();
+    // create the archive page
+    $archive_page_id = isset( $settings['archive_page_id'] ) ? $settings['archive_page_id'] : 0;
+    $page_found_trash = false;
 
-        $kbe_table_posts = $wpdb->prefix.'posts';
-
-        $kbe_data_posts = array(
-                            'post_author'           =>  $kbe_user_id,
-                            'post_date'             =>  $kbe_now,
-                            'post_date_gmt'         =>  $kbe_now_gmt,
-                            'post_content'          =>  '[kbe_knowledgebase]',
-                            'post_title'            =>  'Knowledgebase',
-                            'post_excerpt'          =>  '',
-                            'post_status'           =>  'publish',
-                            'comment_status'        =>  'closed',
-                            'ping_status'           =>  'closed',
-                            'post_password'         =>  '',
-                            'post_name'             =>  'knowledgebase',
-                            'to_ping'               =>  '',
-                            'pinged'                =>  '',
-                            'post_modified'         =>  $kbe_now,
-                            'post_modified_gmt'     =>  $kbe_now_gmt,
-                            'post_content_filtered' =>  '',
-                            'post_parent'           =>  '0',
-                            'guid'                  =>  $kbe_guid,
-                            'menu_order'            =>  '0',
-                            'post_type'             =>  'page',
-                            'post_mime_type'        =>  '',
-                            'comment_count'         =>  '0',
-                        );
-        $wpdb->insert($kbe_table_posts,$kbe_data_posts) or die(mysql_error());
-
-        //  Insert a page template for knowlwdgebase
-        $kbe_tempTableSql = $wpdb->get_results("Select post_content, ID
-                                                From ".$kbe_prefix."posts
-                                                Where post_content Like '%[kbe_knowledgebase]%'
-                                                And post_type <> 'revision'");
-        foreach($kbe_tempTableSql as $kbe_tempTableRow) {
-            $tempPageId = $kbe_tempTableRow->ID;
-
-            //  Set Knowledgebase page template
-            add_post_meta($tempPageId, '_wp_page_template', 'wp_knowledgebase/kbe_knowledgebase.php');
+    if ( $archive_page_id > 0 && ( $page_object = get_post( $archive_page_id ) ) ) {
+        if ( 'trash' != $page_object->post_status ) {
+            return; // found the page and it is published so we're good
+        } else {
+            $page_found_trash = true; // found the page in the trash
         }
     }
 
-    $kbe_optSlugSql = $wpdb->get_results("Select * From ".$kbe_prefix."options Where option_name like '%kbe_plugin_slug%'");
+    // Search for an existing page with the specified page content (typically a shortcode)
+    $page_found = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type='page' AND post_content LIKE %s LIMIT 1;", "%[kbe_knowledgebase]%" ) );
 
-    if(!$kbe_optSlugSql){
-        add_option( 'kbe_plugin_slug', 'knowledgebase', '', 'yes' );
+    // Page was found in trash but it did not have the correct shortcode (so just recreate it)
+    if ( ! $page_found && $page_found_trash ) {
+        $page_found_trash = false;
+    } elseif ( $page_found && $page_found > 0 ){
+        $page_found_trash = true;
     }
 
-    $kbe_optPageSql = $wpdb->get_results("Select * From ".$kbe_prefix."options Where option_name like '%kbe_article_qty%'");
-
-    if(!$kbe_optPageSql){
-        add_option( 'kbe_article_qty', '5', '', 'yes' );
+    // create the new page
+    if ( ! $page_found_trash ) {
+        $page_data = array(
+            'post_status'    => 'publish',
+            'post_type'      => 'page',
+            'post_author'    => 1,
+            'post_name'      => _x( 'knowledgebase', 'default slug', 'kbe' ),
+            'post_title'     => __( 'Knowledgebase', 'kbe' ),
+            'post_content'   => '[kbe_knowledgebase]',
+            'comment_status' => 'closed',
+            'ping_status'           =>  'closed',
+        );
+        $page_id   = wp_insert_post( $page_data );
+    // or update any found page
+    } else {
+        $page_data = array(
+            'ID'             => $page_found,
+            'post_status'    => 'publish',
+        );
+        $page_id = wp_update_post( $page_data );
     }
+
+    $settings['archive_page_id'] = $page_id;
+    update_option( 'kbe_settings', $settings );
     
-    if (function_exists('is_multisite') && is_multisite()) {
-        // check if it is a network activation - if so, run the activation function for each blog id
-        if ($kbe_networkwide) {
-            $kbe_old_blog = $wpdb->blogid;
-            // Get all blog ids
-            $kbe_blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
-            foreach ($kbe_blog_ids as $kbe_blog_id) {
-                switch_to_blog($kbe_blog_id);
-            }
-            switch_to_blog($kbe_old_blog);
-            return;
-        }   
-    } 
+    //  Flush Rewrite Rules
+    require "includes/kbe_post_type.php";
+    kbe_articles();
+    kbe_taxonomies();
+    flush_rewrite_rules();
+
 }
 
 
