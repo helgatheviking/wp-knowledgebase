@@ -69,9 +69,10 @@ function kbe_includes(){
 register_activation_hook(__FILE__, 'wp_kbe_hooks');
 function wp_kbe_hooks($kbe_networkwide) {
     
+    //  Post type and taxonomies
+    require "includes/kbe_post_type.php";
     kbe_articles();
     kbe_taxonomies();
-    kbe_custom_tags();
     flush_rewrite_rules();
     
     global $wpdb;
