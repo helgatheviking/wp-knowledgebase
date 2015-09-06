@@ -28,12 +28,10 @@ function kbe_upgrade_plugin(){
      		
 	     	$permalinks = array();
 
-    	global $wpdb;
-		$getSql = $wpdb->get_results("Select ID From $wpdb->posts Where post_content Like '%[kbe_knowledgebase]%' And post_type <> 'revision'");
+    		global $wpdb;
+			// look for an existing page
+			$page_found = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type='page' AND post_content LIKE %s LIMIT 1;", "%[kbe_knowledgebase]%" ) );
 
-		foreach($getSql as $getRow) {
-		    $options['archive_page_id'] = $getRow->ID;
-		}
 			$settings['archive_page_id'] = $page_found && $page_found > 0 ? $page_found : 0;
 			$settings['article_qty'] = get_option( 'kbe_article_qty', 5 );
 			$settings['search_setting'] = get_option( 'kbe_search_setting', 0 );
