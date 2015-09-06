@@ -41,7 +41,7 @@ function kbe_articles() {
         'publicly_queryable'    => 	true,
         'show_ui'               => 	true,
         'query_var'             => 	true,
-        'menu_icon'             => 	WP_KNOWLEDGEBASE.'images/icon-kbe.png',
+        'menu_icon'             => 	'dashicons-book-alt',
         'capability_type'       => 	'post',
         'hierarchical'          => 	false,
         'supports'              => 	array('title','editor','thumbnail','comments','tags','revisions'),
