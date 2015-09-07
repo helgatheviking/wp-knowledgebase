@@ -120,10 +120,10 @@ function wp_kbe_hooks() {
     if ( $trashed_page_found ) {
         $page_id   = $trashed_page_found;
         $page_data = array(
-            'ID'             => $page_found,
+            'ID'             => $page_id,
             'post_status'    => 'publish',
         );
-        $page_id = wp_update_post( $page_data );
+        wp_update_post( $page_data );
     }
     // or create the new page
     else {
