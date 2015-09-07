@@ -11,9 +11,10 @@
  * @since  1.0.0
  */
 add_action( 'admin_menu', 'kbe_plugin_menu' );
+
 function kbe_plugin_menu() {
-    add_submenu_page( 'edit.php?post_type=kbe_knowledgebase', 'Order', 'Order', 'manage_options', 'kbe_order', 'wp_kbe_order' );
-    add_submenu_page( 'edit.php?post_type=kbe_knowledgebase', 'Settings', 'Settings', 'manage_options', 'kbe_options', 'wp_kbe_options' );
+    add_submenu_page( 'edit.php?post_type=kbe_knowledgebase', __( 'Re-Order', 'kbe' ), __( 'Re-Order', 'kbe' ), 'manage_options', 'kbe_order', 'wp_kbe_order' );
+    add_submenu_page( 'edit.php?post_type=kbe_knowledgebase', __( 'Settings', 'kbe' ), __( 'Settings', 'kbe' ), 'manage_options', 'kbe_options', 'wp_kbe_options' );
 }
 
 /**
