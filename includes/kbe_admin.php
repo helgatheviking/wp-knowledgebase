@@ -93,7 +93,7 @@ function wp_kbe_options(){
  * @since  1.0.0
  */
 function wp_kbe_order(){
-    require "kbe_order.php";
+    require "kbe_reorder.php";
 }
 
 /**
@@ -271,3 +271,52 @@ function kbe_validate_permalinks(){
 	}
 
 }
+
+
+/**
+ * Callback to save the article or category order
+ * @since  1.1.0
+ */
+add_action( 'wp_ajax_kbe_reorder', 'kbe_save_new_order' );
+
+function kbe_save_new_order() {
+
+	global $wpdb;
+
+	$status = -1;
+  
+	check_ajax_referer( 'kbe_order_nonce', 'security' );
+
+    if( !empty( $_POST['order'] ) ){
+
+    	$items = explode( ',', $_POST['order'] );
+
+		$i = 0; $passed = true;
+
+		if( 'category' == $_POST['type'] ){
+			foreach( $items as $id ){
+				if( false === $wpdb->update($wpdb->terms, array( 'terms_order' => $i ), array( 'term_id' => $id ) ) ){
+		    		$passed = false;
+		    	}
+			    $i++;
+			}	
+		} else if( 'article' == $_POST['type'] ){
+			foreach( $items as $id ){
+		    	$data = array(
+		            'ID'             => $id,
+		            'menu_order'    => $i,
+		        );
+		        if( false === wp_update_post( $data ) ){
+		        	$passed = false;
+		        }
+		    	$i++;
+			}
+		}
+
+		$status = $passed ? '1' : -1;
+
+    }
+
+    die($status);
+}
+
