@@ -129,7 +129,7 @@ function kbe_template_chooser($template){
 	if ( $file ) {
 		$template       = locate_template( array_unique( $find ) );
 		if ( ! $template ) {
-			$template = trailingslashit( WP_KNOWLEDGEBASE_PATH ) . 'template/' . $file;
+			$template = trailingslashit( WP_KNOWLEDGEBASE_PATH ) . 'templates/' . $file;
 		}
 	}
 

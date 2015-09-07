@@ -35,7 +35,7 @@ function kbe_upgrade_plugin(){
 			$settings['archive_page_id'] = $page_found && $page_found > 0 ? $page_found : 0;
 			$settings['article_qty'] = get_option( 'kbe_article_qty', 5 );
 			$settings['search_setting'] = get_option( 'kbe_search_setting', 0 );
-			$settings['breadcrumb_setting'] = get_option( 'kbe_breadcrumbs_setting', 0 );
+			$settings['breadcrumbs_setting'] = get_option( 'kbe_breadcrumbs_setting', 0 );
 			$settings['sidebar_home'] = get_option( 'kbe_sidebar_home', 0 );
 			$settings['sidebar_inner'] = get_option( 'kbe_sidebar_inner', 0 );
 			$settings['comments_setting'] = get_option( 'kbe_comments_setting', 0 );
