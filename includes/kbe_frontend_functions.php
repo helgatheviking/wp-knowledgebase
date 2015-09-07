@@ -86,6 +86,9 @@ function kbe_template_chooser($template){
 
 	$template_path = apply_filters( 'kbe_template_path', 'wp_knowledgebase/' );
 	
+	$settings = get_option( 'kbe_settings' );
+    $archive_page_id = isset( $settings['archive_page_id' ] ) ? $settings['archive_page_id'] : 0;
+    
 	$find = array();
 	$file = '';
 
@@ -118,7 +121,7 @@ function kbe_template_chooser($template){
 		$find[] = $file;
 		$find[] = $template_path . $file;
 
-	} elseif ( is_post_type_archive( 'kbe_knowledgebase' ) || is_page( get_option('kbe_archive_page_id' ) ) ) {
+	} elseif ( is_post_type_archive( 'kbe_knowledgebase' ) || ( $archive_page_id && is_page( $archive_page_id ) ) ) {
 
 		$file   = 'archive-kbe_knowledgebase.php';
 		$find[] = $file;
@@ -133,7 +136,7 @@ function kbe_template_chooser($template){
 		}
 	}
 
-	  return $template;
+	return $template;
 
 }
 
