@@ -95,32 +95,42 @@ function wp_kbe_hooks() {
 
     // create the archive page
     $archive_page_id = isset( $settings['archive_page_id'] ) ? $settings['archive_page_id'] : 0;
-    $page_found_trash = false;
 
+    // check to see if has settings page and it exists
     if ( $archive_page_id > 0 && ( $page_object = get_post( $archive_page_id ) ) ) {
-        if ( 'trash' != $page_object->post_status ) {
+        if ( 'page' === $page_object->post_type && ! in_array( $page_object->post_status, array( 'pending', 'trash', 'future', 'auto-draft' ) ) ){
             return; // found the page and it is published so we're good
-        } else {
-            $page_found_trash = true; // found the page in the trash
-        }
+        } 
     }
 
     // Search for an existing page with the specified page content (typically a shortcode)
-    $page_found = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type='page' AND post_content LIKE %s LIMIT 1;", "%[kbe_knowledgebase]%" ) );
-
-    // Page was found in trash but it did not have the correct shortcode (so just recreate it)
-    if ( ! $page_found && $page_found_trash ) {
-        $page_found_trash = false;
-    } elseif ( $page_found && $page_found > 0 ){
-        $page_found_trash = true;
+    $valid_page_found = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type='page' AND post_status NOT IN ( 'pending', 'trash', 'future', 'auto-draft' ) AND post_content LIKE %s LIMIT 1;", "%[kbe_knowledgebase]%" ) );
+    
+    // valid page was found so update settings
+    if ( $valid_page_found ) {
+        $settings['archive_page_id'] = $valid_page_found;
+        update_option( 'kbe_settings', $settings );
+        return;
     }
 
-    // create the new page
-    if ( ! $page_found_trash ) {
+    // Search for a matching valid trashed page
+    $trashed_page_found = $wpdb->get_var( $wpdb->prepare( "SELECT ID FROM $wpdb->posts WHERE post_type='page' AND post_status = 'trash' AND post_content LIKE %s LIMIT 1;", "%[kbe_knowledgebase]%" ) );
+    
+    // update trashed page
+    if ( $trashed_page_found ) {
+        $page_id   = $trashed_page_found;
+        $page_data = array(
+            'ID'             => $page_found,
+            'post_status'    => 'publish',
+        );
+        $page_id = wp_update_post( $page_data );
+    }
+    // or create the new page
+    else {
         $page_data = array(
             'post_status'    => 'publish',
             'post_type'      => 'page',
-            'post_author'    => 1,
+            'post_author'    => get_current_user_id(),
             'post_name'      => _x( 'knowledgebase', 'default slug', 'kbe' ),
             'post_title'     => __( 'Knowledgebase', 'kbe' ),
             'post_content'   => '[kbe_knowledgebase]',
@@ -128,14 +138,7 @@ function wp_kbe_hooks() {
             'ping_status'           =>  'closed',
         );
         $page_id   = wp_insert_post( $page_data );
-    // or update any found page
-    } else {
-        $page_data = array(
-            'ID'             => $page_found,
-            'post_status'    => 'publish',
-        );
-        $page_id = wp_update_post( $page_data );
-    }
+    } 
 
     $settings['archive_page_id'] = $page_id;
     update_option( 'kbe_settings', $settings );
