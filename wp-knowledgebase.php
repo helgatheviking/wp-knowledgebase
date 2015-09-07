@@ -11,7 +11,7 @@
 
 
 //=========> Define plugin URL
-define( 'WP_KNOWLEDGEBASE', plugin_dir_url(__FILE__));
+define( 'WP_KNOWLEDGEBASE_URL', plugin_dir_url(__FILE__));
 
 //=========> Define plugin path
 define( 'WP_KNOWLEDGEBASE_PATH', plugin_dir_path(__FILE__));
@@ -187,6 +187,7 @@ define('KBE_POST_TYPE', 'kbe_knowledgebase');
 define('KBE_POST_TAXONOMY', 'kbe_taxonomy');
 define('KBE_POST_TAGS', 'kbe_tags');
 define('KBE_PAGE_TITLE', isset( $settings['archive_page_id'] ) ? $settings['archive_page_id'] : 0 );
+define('WP_KNOWLEDGEBASE', 'WP_KNOWLEDGEBASE_URL' );
 
 
 /**
