@@ -84,7 +84,7 @@ function wp_kbe_hooks() {
             'archive_page_id' => 0,
             'article_qty' => 5,
             'search_setting' =>  0,
-            'breadcrumb_setting' =>  0,
+            'breadcrumbs_setting' =>  0,
             'sidebar_home' => 0,
             'sidebar_inner' => 0,
             'comment_setting' => 0,

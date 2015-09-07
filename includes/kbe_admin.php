@@ -110,7 +110,7 @@ function kbe_validate_settings( $input ) {
 	$clean['article_qty'] = intval( $input['article_qty'] );
 
 	$clean['search_setting'] =  isset( $input['search_setting'] ) && $input['search_setting'] ? 1 : 0 ;  //checkbox
-	$clean['breadcrumb_setting'] =  isset( $input['breadcrumb_setting'] ) && $input['breadcrumb_setting'] ? 1 : 0 ;  //checkbox
+	$clean['breadcrumbs_setting'] =  isset( $input['breadcrumbs_setting'] ) && $input['breadcrumbs_setting'] ? 1 : 0 ;  //checkbox
 
 	$radio = array( 0, 1, 2 );
 
