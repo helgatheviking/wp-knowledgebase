@@ -21,6 +21,7 @@ function kbe_plugin_menu() {
  * @since  1.0.0
  */
 add_action( 'admin_init', 'kbe_register_settings' );
+
 function kbe_register_settings() {
 	// regular plugin settings
 	register_setting( 'kbe_settings', 'kbe_settings', 'kbe_validate_settings' );
@@ -52,17 +53,29 @@ function kbe_register_settings() {
  */
 add_action( 'current_screen', 'kbe_admin_settings_scripts' );
 function kbe_admin_settings_scripts($screen) {
+
+	wp_register_style('kbe_admin_css', WP_KNOWLEDGEBASE_URL . 'css/kbe_admin_style.css', array(), KBE_PLUGIN_VERSION );
+
     // first check that $hook_suffix is appropriate for your admin page
     if( $screen->id == 'kbe_knowledgebase_page_kbe_options' ){
         wp_enqueue_style('wp-color-picker');
         wp_enqueue_script('cp-script-handle', WP_KNOWLEDGEBASE_URL.'js/admin/color_picker.js', array( 'wp-color-picker' ), KBE_PLUGIN_VERSION, true);
+
+        wp_enqueue_style('kbe_admin_css');
+
     } elseif ( $screen->id == 'kbe_knowledgebase_page_kbe_order' ){
-        wp_enqueue_script( 'jquery' );
-        wp_enqueue_script( 'jquery-ui-sortable' );
+        wp_enqueue_script( 'kbe_reorder', WP_KNOWLEDGEBASE_URL . 'js/admin/settings-reorder.js', array( 'jquery', 'jquery-ui-sortable' ), KBE_PLUGIN_VERSION, true );
+
+		wp_localize_script( 'kbe_reorder', 'kbe_reorder_messages', array(
+			'article_success' => __( 'Article Order updated successfully.', 'kbe'),
+			'article_fail' => __('An error occured, the article order has not been saved.', 'kbe' ),
+			'category_success' => __('Category Order updated successfully.', 'kbe'),
+            'category_fail' => __('An error occured, the category order has not been saved.', 'kbe')
+		) );
+
+		wp_enqueue_style('kbe_admin_css');
     }
-    if( $screen->post_type == 'kbe_knowledgebase' ){
-        wp_enqueue_style('kbe_admin_css', WP_KNOWLEDGEBASE.'css/kbe_admin_style.css');
-    }
+
 }
 
 
