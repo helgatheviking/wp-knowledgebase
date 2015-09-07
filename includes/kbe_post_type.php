@@ -28,7 +28,7 @@ function kbe_articles() {
         'add_new_item'          => 	__('Add New Article', 'kbe'),
         'edit_item'             => 	__('Edit Article', 'kbe'),
         'new_item'              => 	__('New Article', 'kbe'),
-        'view_item'             => 	__('View Articles', 'kbe'),
+        'view_item'             => 	__('View Article', 'kbe'),
         'search_items'          => 	__('Search Articles', 'kbe'),
         'not_found'             => 	__('Nothing found', 'kbe'),
         'not_found_in_trash'    => 	__('Nothing found in Trash', 'kbe'),
@@ -37,6 +37,7 @@ function kbe_articles() {
     
     $args = apply_filters( 'kbe_post_type_args', array(
         'labels'                => 	$labels,
+        'description'         => __( 'This is where you can add new articles to your knowledgebase.', 'kbe' ),
         'public'                => 	true,
         'publicly_queryable'    => 	true,
         'show_ui'               => 	true,
@@ -52,6 +53,7 @@ function kbe_articles() {
         'can_export'            => 	true,
         'has_archive'           => 	$archive_page_id && get_post( $archive_page_id ) ? get_page_uri( $archive_page_id ) : 'knowledgebase',
         'exclude_from_search'   => 	true
+
     ) );
  
     register_post_type( 'kbe_knowledgebase' , $args );
